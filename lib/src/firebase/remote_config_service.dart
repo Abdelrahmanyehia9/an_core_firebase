@@ -4,12 +4,17 @@ class RemoteConfigService {
   late final FirebaseRemoteConfig _remoteConfig;
 
   /// Call this during app startup
-  Future<void> init({Map<String, Object>? defaultValues}) async {
+  Future<void> init(
+      {Map<String, Object>? defaultValues,
+      RemoteConfigSettings? remoteConfigSettings}) async {
     _remoteConfig = FirebaseRemoteConfig.instance;
 
     // Set default values (optional fallback)
     await _remoteConfig.setDefaults(defaultValues ?? {});
-
+    await _remoteConfig.setConfigSettings(remoteConfigSettings ??
+        RemoteConfigSettings(
+            fetchTimeout: const Duration(seconds: 30),
+            minimumFetchInterval: const Duration(seconds: 1)));
     // Fetch & activate the latest config from server
     await _remoteConfig.fetchAndActivate();
   }
